@@ -1,152 +1,59 @@
-# 🧠 OppMatch – AI-Powered Opportunity Matcher 
+# 🧠 OppMatch – AI-Powered Opportunity Matcher
 
-OppMatch is an intelligent, multi-agent platform designed to help students and early professionals discover grants and internships tailored to their unique skills—with zero manual search.
-
----
+OppMatch is an intelligent platform that automatically matches students with grants and internships using AI.
 
 ## 🔍 How It Works
-
-1. 📄 Upload your CV  
-2. 🧠 Our agents extract key strengths and career goals  
-3. 🌐 They search across platforms—LinkedIn, Google Jobs, and grant portals  
-4. 🎯 And deliver personalized opportunities, instantly  
-
-No filters. No guesswork. Just smart, autonomous results.
-
----
+1. Upload your CV
+2. AI extracts your skills and goals
+3. Searches multiple job platforms
+4. Delivers personalized matches
 
 ## 📁 Project Structure
-
-
 oppmatch/
-├── backend → Laravel API (PHP)
-├── frontend → React App (JavaScript)
-└── agents → Flask Service (Python AI Agents)
+├── backend/    # Laravel API
+├── frontend/   # React App
+└── agents/     # Python AI Service
 
+## 🛠 Full Setup Guide
 
----
-
-## 🛠 Backend Setup (Laravel API)
-
-### 📍 Location:
-`/backend`
-
-### ✅ Requirements:
-- PHP 8.x
-- Composer
-- MySQL
-- Laravel CLI
-
----
-
-### ⚙️ Setup
-
-1. **Navigate to the backend folder**
-   ```bash
-   cd backend
-
-
-Install dependencies
-
+# Backend Setup (Laravel)
+cd backend
 composer install
-
-Create .env file
-
 cp .env.example .env
-
-Update .env with your DB config
-
-env
-
-DB_CONNECTION=mysql
+echo "DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=oppmatch
 DB_USERNAME=root
-DB_PASSWORD=your_password
-
-
-Generate app key
-
-
-
-php artisan key:generate
-
-
-Run migrations
-
-php artisan migrate
-
-
-Start Laravel server
-
-php artisan serve
-
-Laravel runs at: http://127.0.0.1:8000
-
-
-💻 Frontend Setup (React App)
-📍 Location:
-/frontend
-
-✅ Requirements:
-Node.js 16+
-
-npm or yarn
-
-cd ../frontend
-npm install
-npm run dev
-
-
-🤖 Agents Setup (Flask Service)
-📍 Location:
-/agents
-
-✅ Requirements:
-Python 3.9+
-
-pip
-
-(Recommended) virtualenv
-
-
-cd ../agents
-
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate 
-
-pip install -r requirements.txt
-
-GOOGLE_API_KEY=your_google_api_key_here
-LAMA_API_KEY=your_lama_api_key_here_if_needed
-
-
-python app.py
-
-
-Flask runs at: http://127.0.0.1:5000
-
-
-🧪 Quick Start Summary
-
-# Backend
-cd backend
-cp .env.example .env
-composer install
+DB_PASSWORD=your_password" > .env
 php artisan key:generate
 php artisan migrate
-php artisan serve
+php artisan serve &
 
-# Frontend
+# Frontend Setup (React)
 cd ../frontend
-cp .env.example .env
 npm install
-npm start
+cp .env.example .env
+echo "REACT_APP_API_URL=http://127.0.0.1:8000/api" > .env
+npm start &
 
-# Agents
+# AI Agents Setup (Python)
 cd ../agents
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
-python app.py
+echo "GOOGLE_API_KEY=your_google_api_key
+LAMA_API_KEY=your_lama_api_key" > .env
+python app.py &
+
+## 🚀 All Services Running
+Backend: http://127.0.0.1:8000
+Frontend: http://localhost:3000
+AI Agents: http://127.0.0.1:5000
+
+## API Examples
+# Process resume:
+curl -X POST http://127.0.0.1:5000/process-pdf -F "file=@resume.pdf"
+
+# Health check:
+curl http://127.0.0.1:5000/health
