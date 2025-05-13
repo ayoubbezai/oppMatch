@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+html,
+body {
+  overflow-x: hidden !important;
+  width: 100%;
+  max-width: 100%;
+}
+@theme {
+  --font-display: "Montserrat", sans-serif;
+  --color-background: #0b0121; /* Base */
+  --color-background-light: #170b39; /* 20% lighter */
+  --color-background-lighter: #200344; /* 40% lighter */
+  --color-background-dark: #08001a; /* 15% darker */
+  --color-background-darker: #050012; /* 30% darker */
+  --color-background-translucent: rgba(
+    11,
+    1,
+    33,
+    0.8
+  ); /* 80% opacity of base */
+
+  --color-primary: #ffffff; /* Pure White */
+  --color-primary-100: #f2f2f2;
+  --color-primary-150: #ececec;
+  --color-primary-200: #e6e6e6;
+  --color-primary-300: #cccccc;
+  --color-primary-400: #b3b3b3;
+  --color-primary-500: #999999;
+  --color-primary-600: #808080;
+  --color-primary-700: #666666;
+  --color-primary-800: #4d4d4d;
+  --color-primary-900: #333333;
+
+  --color-secondary-50: #f3f3f3;
+  --color-secondary-100: #e6e6e6;
+  --color-secondary-200: #cccccc;
+  --color-secondary-300: #b3b3b3;
+  --color-secondary-400: #a6a6a6;
+  --color-secondary: #9c9c9c; /* Original Secondary */
+  --color-secondary-600: #8c8c8c;
+  --color-secondary-700: #737373;
+  --color-secondary-800: #595959;
+  --color-secondary-900: #404040;
+
+  --color-third-50: #ecfeff;
+  --color-third-100: #cffafe;
+  --color-third-200: #a5f3fc;
+  --color-third-300: #67e8f9;
+  --color-third-400: #22d3ee; /* This is the actual text-cyan-400 color */
+  --color-third: #06b6d4; /* Slightly darker than cyan-400 for base */
+  --color-third-600: #0891b2;
+  --color-third-700: #0e7490;
+  --color-third-800: #155e75;
+  --color-third-900: #164e63;
+}
