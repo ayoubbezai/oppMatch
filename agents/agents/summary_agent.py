@@ -21,7 +21,7 @@ class SummaryAgent:
             verbose=True,
             allow_delegation=False,
             tools=[],  # No tools needed for summary agent
-            llm='gemini/gemini-1.5-flash',
+            llm='gemini/gemini-1.5',
         )
     
     def get_task(self):

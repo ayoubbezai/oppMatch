@@ -16,6 +16,15 @@ class DocumentAnalysisAgent:
     
     def get_agent(self):
         """Create and return the document analysis agent."""
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
+        gemini_llm = ChatGoogleGenerativeAI(
+            model=config.GEMINI_MODEL,
+            google_api_key=config.GOOGLE_API_KEY,
+            temperature=config.TEMPERATURE,
+            verbose=config.VERBOSE
+        )
+
         return Agent(
             role="Document Analysis Expert",
             goal="Extract key information and insights from document content",
@@ -26,9 +35,9 @@ class DocumentAnalysisAgent:
             ),
             verbose=True,
             allow_delegation=True,
-            llm='gemini/gemini-1.5-flash',
+            llm=gemini_llm,  
         )
-    
+
     def get_task(self):
         """Create and return the document analysis task."""
         return Task(

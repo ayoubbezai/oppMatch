@@ -24,7 +24,7 @@ class WebScraperAgent:
             ),
             verbose=True,
             allow_delegation=False,
-            llm='gemini/gemini-1.5-flash',
+            llm='gemini/gemini-1.5',
         )
     
     def get_task(self):

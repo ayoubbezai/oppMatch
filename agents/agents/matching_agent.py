@@ -26,7 +26,7 @@ class MatchingAgent:
             ),
             verbose=True,
             allow_delegation=True,  # Allow delegation to web scraper agent
-            llm='gemini/gemini-1.5-flash',
+            llm='gemini/gemini-1.5',
         )
     
     def get_task(self):
