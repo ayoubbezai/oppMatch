@@ -56,6 +56,12 @@ Route::middleware(['auth:sanctum', 'check.access'])->get('/dashboard', function 
     return "Welcome to your paid dashboard!";
 });
 
+Route::get('/test', function () {
+    return "Welcome to test";
+});
+
+
+
 Route::options('chargilypay/webhook', [ChargilyPayController::class, 'handleOptions']);
 
 Route::post('chargilypay/simulate-webhook', [ChargilyPayController::class, 'simulateWebhook']);

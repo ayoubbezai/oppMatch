@@ -1,0 +1,87 @@
+services:
+  app:
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opp_match_app
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - /var/www/vendor
+    networks:
+      - opp_match
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: opp_match_db
+      DB_PORT: 3306
+      DB_DATABASE: opp_match
+      DB_USERNAME: user
+      DB_PASSWORD: password
+    depends_on:
+      - db
+    command: >
+      sh -c "
+      until php -r \"new PDO('mysql:host=$DB_HOST;dbname=$DB_DATABASE', '$DB_USERNAME', '$DB_PASSWORD');\"; do
+        echo 'Waiting for MySQL...';
+        sleep 3;
+      done;
+      echo 'MySQL is ready! Running migrations...';
+      php artisan migrate --force --seed;
+      php-fpm
+      "
+
+
+  web:
+    image: nginx:alpine
+    platform: linux/arm64
+    container_name: opp_match_web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - opp_match
+
+  db:
+    image: arm64v8/mysql:8.0.33
+    container_name: opp_match_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: opp_match
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - opp_match
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    platform: linux/amd64
+    container_name: opp_match_phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: opp_match_db
+      PMA_PORT: 3306
+      PMA_USER: user
+      PMA_PASSWORD: password
+    depends_on:
+      - db
+    networks:
+      - opp_match
+
+volumes:
+  db_data:
+
+networks:
+  opp_match:
+    driver: bridge
