@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import logo from "../assets/Logo.png";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Maximize2, Minimize2 } from "lucide-react";
 import { useAuth } from "../routes/useAuth";
 import { PaymentService } from "../services/PaymentService";
 import { toast } from "react-hot-toast";
@@ -11,8 +11,33 @@ import { Link as ScrollLink } from "react-scroll";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // ✅ Check fullscreen state updates
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Fullscreen toggle failed:", err);
+      toast.error("Unable to toggle fullscreen mode");
+    }
+  };
 
   const isAccessValid = useMemo(() => {
     if (!user || !user.access_expires_at) return false;
@@ -23,7 +48,7 @@ const Navbar = () => {
     setIsProcessingPayment(true);
     try {
       const { data, error } = await PaymentService.chargilypay();
-      console.log(data)
+      console.log(data);
 
       if (error) {
         toast.error(error.message || "Payment failed");
@@ -46,54 +71,35 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-background-light py-3 px-8 flex items-center justify-between font-display font-light z-50">
       {/* Logo */}
-      <img src={logo} alt="logo" className="h-6" />
+      <img src={logo} alt="logo" className="h-6 cursor-pointer" onClick={() => navigate("/")} />
 
       {/* Desktop Links */}
       <div className="text-primary-400 lg:flex text-sm md:flex gap-7 hidden">
-        <ScrollLink
-          to="home"
-          smooth={true}
-          duration={500}
-          offset={-80}
-          className="cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          Home
-        </ScrollLink>
-        <ScrollLink
-          to="about"
-          smooth={true}
-          duration={500}
-          offset={-80}
-          className="cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          About Us
-        </ScrollLink>
-        <ScrollLink
-          to="features"
-          smooth={true}
-          duration={500}
-          offset={-80}
-          className="cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          Features
-        </ScrollLink>
-        <ScrollLink
-          to="contact"
-          smooth={true}
-          duration={500}
-          offset={-80}
-          className="cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          Contact Us
-        </ScrollLink>
+        {["home", "about", "features", "contact"].map((section) => (
+          <ScrollLink
+            key={section}
+            to={section}
+            smooth={true}
+            duration={500}
+            offset={-80}
+            className="cursor-pointer capitalize"
+            onClick={() => navigate("/")}
+          >
+            {section === "about" ? "About Us" : section === "contact" ? "Contact Us" : section}
+          </ScrollLink>
+        ))}
       </div>
 
-      {/* Desktop Buttons */}
-      <div className="lg:flex gap-5 hidden">
+      {/* Desktop Buttons + Fullscreen */}
+      <div className="lg:flex gap-4 hidden items-center">
+        <button
+          onClick={toggleFullscreen}
+          className="p-2  bg-gray-100 hover:text-white hover:bg-transparent rounded-full transition"
+          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+        >
+          {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+        </button>
+
         {user ? (
           isAccessValid ? (
             <Button className="rounded-2xl">
@@ -113,7 +119,7 @@ const Navbar = () => {
             <Button className="rounded-2xl">
               <RouterLink to="/login">Login</RouterLink>
             </Button>
-            <Button className="rounded-2xl bg-transparent border border-primary text-primary">
+            <Button className="rounded-2xl bg-transparent border border-primary text-primary hover:text-[#0B0121]">
               <RouterLink to="/signup">Sign Up</RouterLink>
             </Button>
           </>
@@ -130,47 +136,39 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-16 right-4 bg-background border rounded-lg shadow-lg p-4 flex flex-col gap-4 text-primary-400">
-          <ScrollLink
-            to="home"
-            smooth={true}
-            duration={500}
-            offset={-80}
-            className="cursor-pointer"
-            onClick={() => setIsMobileMenuOpen(false)}
+        <div className="absolute top-16 right-4 bg-background border rounded-lg shadow-lg p-4 flex flex-col gap-4 text-primary-400 w-48">
+          {["home", "about", "features", "contact"].map((section) => (
+            <ScrollLink
+              key={section}
+              to={section}
+              smooth={true}
+              duration={500}
+              offset={-80}
+              className="cursor-pointer capitalize"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {section === "about" ? "About Us" : section === "contact" ? "Contact Us" : section}
+            </ScrollLink>
+          ))}
+
+          {/* Fullscreen Toggle */}
+          <button
+            onClick={() => {
+              toggleFullscreen();
+              setIsMobileMenuOpen(false);
+            }}
+            className="flex items-center text-white gap-2 border rounded-lg p-2 justify-center"
           >
-            Home
-          </ScrollLink>
-          <ScrollLink
-            to="about"
-            smooth={true}
-            duration={500}
-            offset={-80}
-            className="cursor-pointer"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            About Us
-          </ScrollLink>
-          <ScrollLink
-            to="features"
-            smooth={true}
-            duration={500}
-            offset={-80}
-            className="cursor-pointer"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Features
-          </ScrollLink>
-          <ScrollLink
-            to="contact"
-            smooth={true}
-            duration={500}
-            offset={-80}
-            className="cursor-pointer"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Contact Us
-          </ScrollLink>
+            {isFullscreen ? (
+              <>
+                <Minimize2 size={18} className="text-white" /> Exit Fullscreen
+              </>
+            ) : (
+              <>
+                <Maximize2 size={18} className="text-white"  /> Fullscreen
+              </>
+            )}
+          </button>
 
           {user ? (
             isAccessValid ? (

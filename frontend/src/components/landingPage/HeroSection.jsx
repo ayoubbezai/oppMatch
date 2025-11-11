@@ -5,7 +5,7 @@ import { slideInPar, fadeIn } from "../../utils/Animation";
 const HeroSection = () => {
   return (
     <div
-      className="w-full bg-cover bg-top flex items-center justify-center px-4 pt-25 "
+      className="w-full h-[90vh] bg-cover bg-top flex items-center justify-center px-4 pt-25 "
       style={{ backgroundImage: `url(${background})` }}
       id = "home"
     >
